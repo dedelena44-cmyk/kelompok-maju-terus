@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAJU TERUS - Upload CV</title>
+  <style>
+    /* Reset dan Pengaturan Dasar */
+    :root {
+      --primary-bg: #000011;
+      --secondary-bg: #001133;
+      --accent-color: #0044aa;
+      --text-color: #ffffff;
+      --gold-color: #ffd700;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at center, var(--primary-bg), #000000);
+      color: var(--text-color);
+      overflow-x: hidden;
+    }
+
+    /* Animasi Bintang Latar Belakang */
+    #stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* Header */
+    header {
+      padding: 20px;
+      background-color: var(--secondary-bg);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--accent-color);
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--gold-color);
+    }
+
+    #menuBtn {
+      position: absolute;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+    }
+    
+    /* Panel Menu */
+    #menuPanel {
+      position: absolute;
+      top: 80px;
+      left: 20px;
+      background: #002244;
+      padding: 15px;
+      border-radius: 8px;
+      display: none; /* Awalnya disembunyikan */
+      z-index: 50;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    #menuPanel button {
+      background: var(--accent-color);
+      border: none;
+      color: var(--text-color);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 10px 15px;
+      border-radius: 6px;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    #menuPanel button:hover {
+      background-color: #0055cc;
+    }
+
+    /* Kontainer Utama */
+    .container {
+      padding: 20px;
+      max-width: 900px;
+      margin: 20px auto;
+    }
+
+    /* Formulir Upload */
+    form {
+      display: none; /* Awalnya disembunyikan */
+      background-color: rgba(0, 17, 51, 0.8);
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      border: 1px solid var(--secondary-bg);
+    }
+
+    form label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    form input[type="text"],
+    form input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #003366;
+      background-color: #001122;
+      color: var(--text-color);
+    }
+    
+    form button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      border-radius: 6px;
+      border: none;
+      background-color: var(--accent-color);
+      color: var(--text-color);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    
+    form button:hover {
+      background-color: #0055cc;
+    }
+
+    /* Judul dan Foto Grup */
+    .title {
+      text-align: center;
+      font-size: 24px;
+      background: linear-gradient(to right, #00ccff, var(--gold-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 20px;
+    }
+
+    .photo-group {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .photo-group img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+    }
+
+    .photo-group p {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #ccc;
+    }
+
+    /* Grid Kartu CV */
+    .cv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .cv-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .cv-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 204, 255, 0.2);
+    }
+
+    .cv-card img {
+      width: 50px; /* Diperkecil lagi agar lebih pas */
+      height: 50px; /* Diperkecil lagi agar lebih pas */
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--gold-color);
+    }
+
+    .cv-card h3 {
+      font-size: 14px;
+      margin: 10px 0 5px;
+      color: var(--gold-color);
+      word-wrap: break-word;
+    }
+    
+    .card-buttons {
+      display: flex;
+      flex-direction: column; /* Mengatur tombol ke bawah */
+      align-items: center;
+      gap: 8px; /* Jarak antar tombol */
+      margin-top: 10px;
+    }
+
+    .card-buttons button {
+        background: none;
+        border: 1px solid #555;
+        color: white;
+        font-size: 12px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 80%;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+    
+    .card-buttons .delete-btn {
+        border-color: #ff4d4d;
+        color: #ff4d4d;
+    }
+
+    .card-buttons .delete-btn:hover {
+        background-color: #ff4d4d;
+        color: white;
+    }
+
+
+    /* Modal untuk menampilkan CV */
+    .cv-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    
+    .modal-content {
+      background: white;
+      color: black;
+      width: 90%;
+      height: 90%;
+      max-width: 800px;
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-content iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      flex-grow: 1; /* Membuat iframe mengisi sisa ruang */
+    }
+
+    .modal-content .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 30px;
+      text-align: center;
+    }
+    
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  
+  <header>
+    <button id="menuBtn">☰</button>
+    <h1>MAJU TERUS</h1>
+  </header>
+  
+  <div id="menuPanel">
+    <button id="toggleFormBtn">📤 Upload CV</button>
+  </div>
+
+  <div class="container">
+    <form id="uploadForm">
+      <label for="nama">Nama</label>
+      <input type="text" id="nama" name="nama" required>
+      
+      <label for="nim">NIM</label>
+      <input type="text" id="nim" name="nim" required>
+      
+      <label for="kelas">Kelas</label>
+      <input type="text" id="kelas" name="kelas" required>
+      
+      <label for="foto">Foto Profil</label>
+      <input type="file" id="foto" name="foto" accept="image/*" required>
+      
+      <label for="cvfile">File CV (.html)</label>
+      <input type="file" id="cvfile" name="cvfile" accept=".html,text/html" required>
+      
+      <button type="submit">Upload</button>
+    </form>
+
+    <h2 class="title">CV REKAN MAJU TERUS</h2>
+    <div class="photo-group">
+      <img src="https://raw.githubusercontent.com/dedelena44-cmyk/kelompok-maju-terus/dc1689e69ed675ea69307fb6be6b5b351846cd19/KELOMPOK%20PWD.jpeg" alt="Foto Bersama">
+      <p>Keluarga Besar MARUS</p>
+    </div>
+
+    <div class="cv-grid" id="cards"></div>
+  </div>
+
+  <div class="cv-modal" id="cvModal">
+      <div class="modal-content">
+        <button class="close-btn" id="closeModalBtn">X</button>
+        <iframe id="cvFrame"></iframe>
+      </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // --- PEMILIHAN ELEMEN DOM ---
+      const form = document.getElementById('uploadForm');
+      const cardsContainer = document.getElementById('cards');
+      const menuBtn = document.getElementById('menuBtn');
+      const menuPanel = document.getElementById('menuPanel');
+      const toggleFormBtn = document.getElementById('toggleFormBtn');
+      const cvModal = document.getElementById('cvModal');
+      const cvFrame = document.getElementById('cvFrame');
+      const closeModalBtn = document.getElementById('closeModalBtn');
+
+      // --- PERBAIKAN: PENGELOLAAN DATA TERPUSAT ---
+      let cvData = []; // Variabel tunggal untuk menyimpan semua data CV
+
+      // Fungsi untuk menyimpan data ke localStorage
+      const saveDataToStorage = () => {
+          localStorage.setItem('cvData', JSON.stringify(cvData));
+      };
+
+      // Fungsi untuk memuat data dari localStorage ke variabel cvData
+      const loadDataFromStorage = () => {
+          cvData = JSON.parse(localStorage.getItem('cvData') || '[]');
+      };
+      
+      // --- FUNGSI LAINNYA ---
+
+      // Fungsi untuk membaca file sebagai Data URL (Promise-based)
+      const readFileAsDataURL = (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      };
+      
+      // Fungsi untuk memuat CV dari variabel cvData dan menampilkannya
+      const loadCVs = () => {
+        cardsContainer.innerHTML = ''; // Kosongkan kontainer dulu
+        cvData.forEach((data, index) => {
+          const card = document.createElement('div');
+          card.className = 'cv-card';
+          card.dataset.index = index; // Simpan index di data attribute
+          
+          card.innerHTML = `
+            <img src="${data.foto}" alt="Foto ${data.nama}">
+            <h3>${data.nama}</h3>
+            <div class="card-buttons">
+                <button class="view-btn">Lihat CV</button>
+                <button class="delete-btn">Hapus</button>
+            </div>
+          `;
+          cardsContainer.appendChild(card);
+        });
+      };
+
+      // Fungsi untuk menampilkan CV di modal (membaca dari variabel cvData)
+      const showCV = (index) => {
+        const idx = parseInt(index, 10);
+        if (cvData[idx]) {
+            cvFrame.src = cvData[idx].cv;
+            cvModal.style.display = 'flex';
+        }
+      };
+
+      // Fungsi untuk menghapus CV (memanipulasi variabel cvData)
+      const deleteCV = (index) => {
+        if (!confirm('Apakah Anda yakin ingin menghapus CV ini?')) return;
+        
+        const idx = parseInt(index, 10);
+        cvData.splice(idx, 1); // Hapus item dari array
+        saveDataToStorage(); // Simpan perubahan ke localStorage
+        loadCVs(); // Muat ulang tampilan kartu
+      };
+      
+      // Fungsi untuk menutup modal
+      const closeModal = () => {
+        cvModal.style.display = 'none';
+        cvFrame.src = 'about:blank'; // Kosongkan iframe
+      };
+
+      // --- EVENT LISTENERS ---
+
+      // Tombol menu utama
+      menuBtn.addEventListener('click', () => {
+        menuPanel.style.display = menuPanel.style.display === 'block' ? 'none' : 'block';
+      });
+
+      // Tombol untuk menampilkan/menyembunyikan form
+      toggleFormBtn.addEventListener('click', () => {
+        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        menuPanel.style.display = 'none'; // Sembunyikan panel menu setelah diklik
+      });
+
+      // Event listener untuk form submit
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Mencegah form submit secara default
+
+        const nama = document.getElementById('nama').value;
+        const nim = document.getElementById('nim').value;
+        const kelas = document.getElementById('kelas').value;
+        const fotoFile = document.getElementById('foto').files[0];
+        const cvFile = document.getElementById('cvfile').files[0];
+        
+        if (!nama || !nim || !kelas || !fotoFile || !cvFile) {
+            alert('Semua kolom harus diisi!');
+            return;
+        }
+
+        try {
+            // Baca kedua file secara paralel
+            const [fotoDataURL, cvDataURL] = await Promise.all([
+                readFileAsDataURL(fotoFile),
+                readFileAsDataURL(cvFile)
+            ]);
+
+            const newCV = { nama, nim, kelas, foto: fotoDataURL, cv: cvDataURL };
+
+            // Simpan ke variabel dan localStorage
+            cvData.push(newCV);
+            saveDataToStorage();
+
+            // Reset form, sembunyikan, dan muat ulang kartu
+            form.reset();
+            form.style.display = 'none';
+            loadCVs();
+            alert('CV berhasil di-upload!');
+
+        } catch (error) {
+            console.error('Gagal membaca file:', error);
+            alert('Terjadi kesalahan saat meng-upload file.');
+        }
+      });
+      
+      // Event delegation untuk tombol di dalam kartu
+      cardsContainer.addEventListener('click', (event) => {
+          const card = event.target.closest('.cv-card');
+          if (!card) return; // Jika klik bukan di dalam kartu, abaikan
+          
+          const index = card.dataset.index;
+          
+          if (event.target.classList.contains('delete-btn')) {
+              deleteCV(index);
+          } else if (event.target.classList.contains('view-btn')) {
+              showCV(index);
+          } else {
+              // Jika klik di area kartu lain, tetap buka CV
+              showCV(index);
+          }
+      });
+
+      // Tombol tutup modal
+      closeModalBtn.addEventListener('click', closeModal);
+      
+      // Menutup modal jika klik di luar konten modal
+      cvModal.addEventListener('click', (event) => {
+          if (event.target === cvModal) {
+              closeModal();
+          }
+      });
+      
+
+      // --- Inisialisasi ---
+      loadDataFromStorage(); // Pertama, muat data dari localStorage ke variabel
+      loadCVs(); // Kedua, tampilkan data dari variabel ke layar
+
+
+      // --- Animasi Bintang ---
+      const canvas = document.getElementById('stars');
+      const ctx = canvas.getContext('2d');
+      let stars = [];
+      const numStars = 150;
+
+      const resizeCanvas = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        stars = [];
+        for(let i = 0; i < numStars; i++) {
+          stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            dx: (Math.random() - 0.5) * 0.5,
+            dy: (Math.random() - 0.5) * 0.5,
+            r: Math.random() * 1.5 + 0.5
+          });
+        }
+      }
+
+      const animateStars = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'white';
+        for(let s of stars) {
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fill();
+          s.x += s.dx;
+          s.y += s.dy;
+          if(s.x < 0 || s.x > canvas.width) s.dx *= -1;
+          if(s.y < 0 || s.y > canvas.height) s.dy *= -1;
+        }
+        requestAnimationFrame(animateStars);
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+      animateStars();
+    });
+  </script>
+</body>
+</html>
